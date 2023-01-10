@@ -9,8 +9,8 @@ GUILD = os.environ['GUILD_ID']
 logging.basicConfig(level=logging.DEBUG)
 bot = interactions.Client(token=TOKEN)
     
-bot.load("kogoj.rolaro")
-bot.load("kogoj.lingvo")
+#bot.load("kogoj.rolaro")
+#bot.load("kogoj.lingvo")
 bot.load("kogoj.testo")
 keep_alive.keep_alive()
 bot.start()
