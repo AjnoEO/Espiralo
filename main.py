@@ -11,7 +11,8 @@ bot = interactions.Client(token=TOKEN)
     
 #bot.load("kogoj.rolaro")
 #bot.load("kogoj.lingvo")
-bot.load("kogoj.testo")
+bot.load("komandaroj.testo")
+bot.load("komandaroj.steltabulo")
 keep_alive.keep_alive()
 bot.start()
 

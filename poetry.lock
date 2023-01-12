@@ -107,6 +107,22 @@ lint = ["black", "flake8", "isort", "pre-commit"]
 readthedocs = ["enum-tools", "furo", "sphinx", "sphinx-copybutton", "sphinx-hoverxref"]
 
 [[package]]
+name = "discord-py-slash-command"
+version = "4.2.1"
+description = "Easy, simple, scalable and modular: a Python API wrapper for interactions."
+category = "main"
+optional = false
+python-versions = ">=3.8.6"
+
+[package.dependencies]
+aiohttp = ">=3.8.1"
+
+[package.extras]
+dev = ["black", "flake8", "isort", "pre-commit", "karma-sphinx-theme", "sphinx", "sphinx-hoverxref"]
+lint = ["black", "flake8", "isort", "pre-commit"]
+readthedocs = ["karma-sphinx-theme", "sphinx", "sphinx-hoverxref"]
+
+[[package]]
 name = "flask"
 version = "2.2.1"
 description = "A simple framework for building complex web applications."
@@ -298,7 +314,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.6,<3.9"
-content-hash = "c84790c410de50e2a87659f761a23c0a3ce3abca9f0d9f75a92a9ab15b8ef217"
+content-hash = "053c20ac38bad3ad8323ee70af26cbcda5ba5b9ece563717064fc6ca509f251d"
 
 [metadata.files]
 aiohttp = []
@@ -310,6 +326,7 @@ charset-normalizer = []
 click = []
 colorama = []
 discord-py-interactions = []
+discord-py-slash-command = []
 flask = []
 frozenlist = []
 idna = []
