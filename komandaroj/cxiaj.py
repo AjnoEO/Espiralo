@@ -1,12 +1,6 @@
 from replit import db
 import interactions as i
 
-def lingvonomo(nomo: str, plena: bool = True, ekmajuskle: bool = False, akuzative: bool = False):
-    ak = "n" if akuzative else ""
-    if (nomo[len(nomo)-1]=='a'):
-        return f"{'L' if ekmajuskle else 'l'}a " + nomo + ak + ((" lingvo" + ak) if plena else "")
-    else:
-        return nomo.capitalize() + ak
 
 def sxlosilo_el_valoro(self, valoro: str, prefikso: str = ""):
     for s in db.keys():
@@ -14,7 +8,8 @@ def sxlosilo_el_valoro(self, valoro: str, prefikso: str = ""):
             return s
     return None
 
-def reaguma_kvanto(mesagxo: i.Message, emogxia_nomo: str):
+
+def EKS_reaguma_kvanto(mesagxo: i.Message, emogxia_nomo: str):
     listo = mesagxo.reactions
     nombro = 0
     if (listo != None):
@@ -22,4 +17,11 @@ def reaguma_kvanto(mesagxo: i.Message, emogxia_nomo: str):
             if (r.emoji.name == emogxia_nomo): nombro = r.count
     return nombro
 
-#def rolmenuo(rolaro, )
+
+def reaguma_kvanto(mesagxo: i.Message, emogxio: i.Emoji):
+    listo = mesagxo.reactions
+    nombro = 0
+    if (listo != None):
+        for r in listo:
+            if (str(r.emoji) == str(emogxio)): nombro = r.count
+    return nombro

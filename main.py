@@ -3,8 +3,8 @@ import os
 import keep_alive
 import logging
 
-TOKEN = os.environ['BOT_TOKEN']
-GUILD = os.environ['GUILD_ID']
+TOKEN = str(os.environ['BOT_TOKEN'])
+GUILD = int(os.environ['ESPERANTO_GUILD_ID'])
 
 logging.basicConfig(level=logging.DEBUG)
 bot = interactions.Client(token=TOKEN)
