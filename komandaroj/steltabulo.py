@@ -1,7 +1,9 @@
 import interactions
 import os
 from replit import db
-from komandaroj.cxiaj import reaguma_kvanto
+from komandaroj.cxiaj import reaguma_kvanto, kunigi
+from PIL import Image
+from urllib.request import urlopen
 
 GUILD = int(os.environ['ESPERANTO_GUILD_ID'])
 USERNAME = str(os.environ['USERNAME_DISCRIMINATOR'])
@@ -45,8 +47,7 @@ class Steltabulo(interactions.Extension):
         if (f"steltabulo_{reagumo.guild_id}_kanalo"
                 in db.prefix("steltabulo_")):
 
-            if ((self.agordmesagxo != None)
-                    and (reagumo.message_id == self.agordmesagxo.id)):
+            if ((self.agordmesagxo != None) and (reagumo.message_id == self.agordmesagxo.id)):
                 kanalo = await self.agordmesagxo.get_channel()
                 await self.agordmesagxo.edit(
                     f"**Sukcese agordite**\n" \
@@ -78,11 +79,8 @@ class Steltabulo(interactions.Extension):
                         parent_id=reagumo.channel_id,
                         force="http")
                     kvanto = reaguma_kvanto(mesagxo, emogxio)
-                    reagumintoj = await mesagxo.get_users_from_reaction(emogxio
-                                                                        )
-                    uzantnomoj = [
-                        f"{u.username}#{u.discriminator}" for u in reagumintoj
-                    ]
+                    reagumintoj = await mesagxo.get_users_from_reaction(emogxio)
+                    uzantnomoj = [f"{u.username}#{u.discriminator}" for u in reagumintoj]
 
                     if (kvanto >= int(
                             db[f"steltabulo_{reagumo.guild_id}_kvanto"])
@@ -92,8 +90,7 @@ class Steltabulo(interactions.Extension):
                         kanalo = await interactions.get(
                             self.client,
                             interactions.Channel,
-                            object_id=db[
-                                f"steltabulo_{reagumo.guild_id}_kanalo"])
+                            object_id=db[f"steltabulo_{reagumo.guild_id}_kanalo"])
                         mesagxkanalo = await mesagxo.get_channel()
                         gildaid = reagumo.guild_id
                         ano = await interactions.get(
@@ -107,26 +104,38 @@ class Steltabulo(interactions.Extension):
                         nomo = ano.nick
                         if (nomo == None):
                             nomo = mesagxo.author.username
+                        aldonajxoj = "> _Tipoj de la aldonajxoj:_"
+                        bildoj = []
+                        bilda_ligilo = None
+                        for a in mesagxo.attachments:
+                            aldonajxoj = aldonajxoj + f"\n> {a.content_type} ({a.content_type[:5]})"
+                            if (a.content_type[:6] == "image/" and bilda_ligilo == None):
+                                bilda_ligilo = a.url
+                            #    bildoj.append(Image.open(urlopen(a.url)))
+                        
+                        if (len(bildoj) != 0):
+                            bildo = kunigi(bildoj)
+                            bd_nomo = f"bildo_{kanalo.id}_{mesagxo.id}.jpg"
+                            bildo.save(bd_nomo)
 
                         plusenhavo = interactions.Embed(
                             author=interactions.EmbedAuthor(
                                 name=nomo,
-                                #name=mesagxo.author.username,
                                 icon_url=avataro,
-                                #icon_url=mesagxo.author.avatar_url
                             ),
                             description=mesagxo.content,
                             timestamp=mesagxo.timestamp,
                             color=0x1EC34B,
+                            image=interactions.EmbedImageStruct(url=bilda_ligilo) if (bilda_ligilo != None) else None,
                         )
 
                         await kanalo.send(
                             content=f"<#{mesagxkanalo.id}> {mesagxo.url}\n" \
-                            #f"{sendota_emogxio} x{kvanto}\n" \
                             f"{emogxio} x{kvanto}\n" \
-                            f"`Tipo de la mesaĝo: {mesagxo.type}`\n",
-                            embeds=plusenhavo)
-                    #if (reagumo.emoji)
+                            f"`Tipo de la mesaĝo: {mesagxo.type}`\n" \
+                            + aldonajxoj,
+                            embeds=plusenhavo
+                        )
 
 
 def setup(client):

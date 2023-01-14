@@ -220,6 +220,18 @@ optional = false
 python-versions = ">=3.8"
 
 [[package]]
+name = "pillow"
+version = "9.4.0"
+description = "Python Imaging Library (Fork)"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-inline-tabs", "sphinx-issues (>=3.0.1)", "sphinx-removed-in", "sphinxext-opengraph"]
+tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
+
+[[package]]
 name = "replit"
 version = "3.2.4"
 description = "A library for interacting with features of repl.it"
@@ -314,7 +326,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.6,<3.9"
-content-hash = "053c20ac38bad3ad8323ee70af26cbcda5ba5b9ece563717064fc6ca509f251d"
+content-hash = "613af37cac152c5aa16c797983c50b582cf01bc1f041f55ce37b41eb59997aeb"
 
 [metadata.files]
 aiohttp = []
@@ -336,6 +348,7 @@ jinja2 = []
 markupsafe = []
 multidict = []
 numpy = []
+pillow = []
 replit = []
 requests = []
 typing-extensions = []

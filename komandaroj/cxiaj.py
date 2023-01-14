@@ -1,5 +1,6 @@
 from replit import db
 import interactions as i
+from PIL import Image
 
 
 def sxlosilo_el_valoro(self, valoro: str, prefikso: str = ""):
@@ -25,3 +26,20 @@ def reaguma_kvanto(mesagxo: i.Message, emogxio: i.Emoji):
         for r in listo:
             if (str(r.emoji) == str(emogxio)): nombro = r.count
     return nombro
+
+def kunigi(bildoj: list):
+    w = 0
+    h = 0
+    for b in bildoj:
+        print(f"W: {b.width}")
+        if (w < b.width): w = b.width
+    heights = {b: b.height*w/(b.width) for b in bildoj}
+    for b in bildoj:
+        h = h + heights[b]
+    print(f"{w}x{h} por {len(bildoj)} bildo{'j' if len(bildoj)>1 else ''}")
+    rez = Image.new("RGB", (w, h))
+    h = 0
+    for b in bildoj:
+        rez.paste(b.resize( (w, heights[b])), (0, h) )
+        h = h + heights[b]
+    return rez
