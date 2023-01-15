@@ -1,7 +1,8 @@
 from replit import db
 import interactions as i
 from PIL import Image
-
+import requests
+import re
 
 def sxlosilo_el_valoro(self, valoro: str, prefikso: str = ""):
     for s in db.keys():
@@ -20,6 +21,7 @@ def EKS_reaguma_kvanto(mesagxo: i.Message, emogxia_nomo: str):
 
 
 def reaguma_kvanto(mesagxo: i.Message, emogxio: i.Emoji):
+    """Kvanto de la reagumoj per `emogxio` sub `mesagxo`"""
     listo = mesagxo.reactions
     nombro = 0
     if (listo != None):
@@ -28,6 +30,7 @@ def reaguma_kvanto(mesagxo: i.Message, emogxio: i.Emoji):
     return nombro
 
 def kunigi(bildoj: list):
+    """Bildo enhavanta ĉiujn bildojn el la listo `bildoj`, kolumne"""
     w = 0
     h = 0
     for b in bildoj:
@@ -43,3 +46,9 @@ def kunigi(bildoj: list):
         rez.paste(b.resize( (w, heights[b])), (0, h) )
         h = h + heights[b]
     return rez
+
+def tenora_gifo(ligilo: str):
+    """La ligilo al la gifo, trovebla per nomala ligilo `ligilo`"""
+    pagxo = requests.get(ligilo).text
+    regespo = r"(?i)\b((https?://media[.]tenor[.]com/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))[.]gif)"
+    return re.findall(regespo, pagxo)[0][0]

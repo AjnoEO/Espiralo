@@ -55,8 +55,7 @@ class Testo(interactions.Extension):
         description="La anstataŭonta signovico",  #the string to replace with
         required=True,
     )
-    async def anstatauxigi(self, ctx, kion: str,
-                           per_kio: str):  #replace in keys
+    async def anstatauxigi(self, ctx, kion: str, per_kio: str):  #replace in keys
         """Anstataŭigi signovicojn en la datumbazo"""
         k = 0
         p = 0
@@ -121,6 +120,23 @@ class Testo(interactions.Extension):
         ]
         await ctx.populate(elektoj)
 
+    @interactions.extension_command(
+        default_member_permissions=interactions.Permissions.ADMINISTRATOR,
+        scope=GUILD,
+    )
+    @interactions.option(
+        description="Kion diri",
+    )
+    async def diri(self, ctx, dirajxo: str):
+        """Diri ion en la nomo de la roboto"""
+        await ctx.send(f"Laŭ cia peto, mi sendis al <#{ctx.channel_id}> la sekvan mesaĝon:\n\n{dirajxo}", ephemeral=True)
+        kanalo = await interactions.get(
+            self.client,
+            interactions.Channel,
+            object_id=ctx.channel_id,
+            parent_id=ctx.guild_id,
+        )
+        await kanalo.send(dirajxo)
 
 def setup(client):
     Testo(client)
