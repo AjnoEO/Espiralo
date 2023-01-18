@@ -43,7 +43,7 @@ class Testo(interactions.Extension):
         """Montri la enhavon de la datumbazo"""  #show the contents of the database
         s = "Jen la enhavo de la datumbazo:\n"  #"here are the contents of the database:\n"
         for sxlosilo in db.keys():
-            s += f"`{sxlosilo}`: `{db[sxlosilo]}`\n"  #"[key]: [value]"
+            s += f"`{sxlosilo}`: {f'`{db[sxlosilo]}`' if (db[sxlosilo] != '') else 'Nula signovico'}\n"  #"[key]: [value]"
         await ctx.send(s)
 
     @datumbazo.subcommand()
