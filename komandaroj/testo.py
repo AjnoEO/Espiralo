@@ -1,9 +1,10 @@
 import interactions
 import os
 from replit import db
+import re
 
 GUILD = int(os.environ['ESPERANTO_GUILD_ID'])
-
+ID = int(os.environ['BOT_ID'])
 
 class Testo(interactions.Extension):
     def __init__(self, client):
@@ -22,14 +23,21 @@ class Testo(interactions.Extension):
         str,
         name="opcio",
         description="Testa opcio",
-        autocomplete=True,
+        #autocomplete=True,
     )
-    async def testa(self, ctx, opcio: str):
+    async def testa(self, ctx, opcio: interactions.Channel):
         """Testa komando"""
         await ctx.send(
-            f"{opcio}\n" \
-            f"Longo: {len(opcio)}" \
+            f"<#{opcio.id}>\n" \
         )
+        robota_ano = await interactions.get(
+            self.client,
+            interactions.Member,
+            object_id = ID,
+            parent_id = GUILD,
+        )
+        #permesoj = await robota_ano.has_permissions(interactions.Permissions.VIEW_CHANNEL, interactions.Permissions.SEND_MESSAGES, )
+        #print(permesoj)
 
     @interactions.extension_command(
         default_member_permissions=interactions.Permissions.ADMINISTRATOR,
@@ -43,7 +51,10 @@ class Testo(interactions.Extension):
         """Montri la enhavon de la datumbazo"""  #show the contents of the database
         s = "Jen la enhavo de la datumbazo:\n"  #"here are the contents of the database:\n"
         for sxlosilo in db.keys():
-            s += f"`{sxlosilo}`: {f'`{db[sxlosilo]}`' if (db[sxlosilo] != '') else 'Nula signovico'}\n"  #"[key]: [value]"
+            if (len(db[sxlosilo])<100):
+                s += f"`{sxlosilo}`: {f'`{db[sxlosilo]}`' if (db[sxlosilo] != '') else 'Nula signovico'}\n"  #"[key]: [value]"
+            else:
+                s += f"`{sxlosilo}`: `{db[sxlosilo][:100]}`...\n"
         await ctx.send(s)
 
     @datumbazo.subcommand()
@@ -70,7 +81,7 @@ class Testo(interactions.Extension):
                     db[s] = db[sxlosilo]
                     del db[sxlosilo]
         plk = "j" if k != 1 else ""
-        plp = "j" if k != 1 else ""
+        plp = "j" if p != 1 else ""
         await ctx.send(
             f"Farite\n" \
             f"Ŝlosilo{plk} de {k} elemento{plk} estis renomita{plk}\n"  \
@@ -97,7 +108,7 @@ class Testo(interactions.Extension):
                                     label="Jes, forigi",
                                     custom_id="forigi_el_datumbazo")
             plk = "j" if k > 1 else ""
-            s = f"Vi volas forigi el la datumbazo {k} elemento{plk}n:\n{s}"
+            s = f"Vi volas forigi el la datumbazo {k} elemento{plk}n:\n{s}" if (len(s) < 1800) else f"Vi volas forigi el la datumbazo {k} elemento{plk}n"
             self.forigprefikso = kion
             if self.lasta_forigmesagxo != None:
                 await self.lasta_forigmesagxo.disable_all_components()
@@ -105,7 +116,6 @@ class Testo(interactions.Extension):
 
     @interactions.extension_component("forigi_el_datumbazo")
     async def forigi_el_datumbazo(self, ctx):
-        print(dir(self.lasta_forigmesagxo))
         for sxlosilo in db.prefix(self.forigprefikso):
             del db[sxlosilo]
         await self.lasta_forigmesagxo.disable_all_components()
@@ -129,7 +139,7 @@ class Testo(interactions.Extension):
     )
     async def diri(self, ctx, dirajxo: str):
         """Diri ion en la nomo de la roboto"""
-        await ctx.send(f"Laŭ cia peto, mi sendis al <#{ctx.channel_id}> la sekvan mesaĝon:\n\n{dirajxo}", ephemeral=True)
+        await ctx.send(f"Laŭ cia peto, mi sendis la sekvan mesaĝon:\n\n{dirajxo}", ephemeral=True)
         kanalo = await interactions.get(
             self.client,
             interactions.Channel,
@@ -137,6 +147,25 @@ class Testo(interactions.Extension):
             parent_id=ctx.guild_id,
         )
         await kanalo.send(dirajxo)
+
+    @interactions.extension_command(
+        type=interactions.ApplicationCommandType.MESSAGE,
+        name="La mesaĝa objekto",
+        scope=GUILD,
+        default_member_permissions=interactions.Permissions.ADMINISTRATOR,
+    )
+    async def la_mesagxa_objekto(self, ctx):
+        kanalo = await interactions.get(
+            self.client,
+            interactions.Channel,
+            object_id=1004690938909700167,
+            parent_id=GUILD,
+        )
+        #mesagxo = re.sub(r"([\(,\[])", r"\1\n", str(ctx.target))
+        print(str(ctx.target))
+        await kanalo.send(f'La mesaĝo:\n```{str(ctx.target)}```')
+        await kanalo.send(f'\nLa mesaĝa json:\n```{str(ctx.target._json)}```')
+        await ctx.send("Sendite al <#1004690938909700167>", ephemeral=True)
 
 def setup(client):
     Testo(client)
