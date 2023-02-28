@@ -170,7 +170,8 @@ class Testo(interactions.Extension):
             respondo += "\n⚠️ La mesaĝa objekto estas tro longa. Vidu ĝin en la konzolo."
         else:
             await kanalo.send(f'La mesaĝa objekto:\n```py\n{str(ctx.target)}```')
-        await kanalo.send(f'La plusenhavo:', embeds=c.plusenhavo_el_mesagxo(self, ctx.target, GUILD))
+        pe = await c.plusenhavo_el_mesagxo(self, ctx.target, GUILD)
+        await kanalo.send(f'La plusenhavo:', embeds=pe)
         await ctx.send(respondo, ephemeral=True)
 
 def setup(client):
