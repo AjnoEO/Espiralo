@@ -2,7 +2,7 @@ import interactions
 import os
 from replit import db
 import re
-import cxiaj as c
+import komandaroj.cxiaj as c
 
 GUILD = int(os.environ['ESPERANTO_GUILD_ID'])
 CHANNEL = int(os.environ['ESPERANTO_CHANNEL_ID'])
