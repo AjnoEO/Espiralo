@@ -2,8 +2,10 @@ import interactions
 import os
 from replit import db
 import re
+import cxiaj as c
 
 GUILD = int(os.environ['ESPERANTO_GUILD_ID'])
+CHANNEL = int(os.environ['ESPERANTO_CHANNEL_ID'])
 ID = int(os.environ['BOT_ID'])
 
 class Testo(interactions.Extension):
@@ -48,8 +50,8 @@ class Testo(interactions.Extension):
 
     @datumbazo.subcommand()
     async def listigi(self, ctx):
-        """Montri la enhavon de la datumbazo"""  #show the contents of the database
-        s = "Jen la enhavo de la datumbazo:\n"  #"here are the contents of the database:\n"
+        """Montri la enhavon de la datumbazo"""  
+        s = "Jen la enhavo de la datumbazo:\n"  
         for sxlosilo in db.keys():
             if (len(db[sxlosilo])<100):
                 s += f"`{sxlosilo}`: {f'`{db[sxlosilo]}`' if (db[sxlosilo] != '') else 'Nula signovico'}\n"  #"[key]: [value]"
@@ -150,7 +152,7 @@ class Testo(interactions.Extension):
 
     @interactions.extension_command(
         type=interactions.ApplicationCommandType.MESSAGE,
-        name="La mesaĝa objekto",
+        name="Resendi la mesaĝon",
         scope=GUILD,
         default_member_permissions=interactions.Permissions.ADMINISTRATOR,
     )
@@ -158,14 +160,18 @@ class Testo(interactions.Extension):
         kanalo = await interactions.get(
             self.client,
             interactions.Channel,
-            object_id=1004690938909700167,
+            object_id=CHANNEL,
             parent_id=GUILD,
         )
         #mesagxo = re.sub(r"([\(,\[])", r"\1\n", str(ctx.target))
         print(str(ctx.target))
-        await kanalo.send(f'La mesaĝo:\n```{str(ctx.target)}```')
-        await kanalo.send(f'\nLa mesaĝa json:\n```{str(ctx.target._json)}```')
-        await ctx.send("Sendite al <#1004690938909700167>", ephemeral=True)
+        respondo = f"Sendite al <#{CHANNEL}>."
+        if (len(str(ctx.target)) > 1900):
+            respondo += "\n⚠️ La mesaĝa objekto estas tro longa. Vidu ĝin en la konzolo."
+        else:
+            await kanalo.send(f'La mesaĝa objekto:\n```py\n{str(ctx.target)}```')
+        await kanalo.send(f'La plusenhavo:', embeds=c.plusenhavo_el_mesagxo(self, ctx.target, GUILD))
+        await ctx.send(respondo, ephemeral=True)
 
 def setup(client):
     Testo(client)
