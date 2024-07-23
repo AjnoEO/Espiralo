@@ -1,6 +1,7 @@
 import hikari
 import lightbulb
 import re
+import datetime as dt
 from configparser import ConfigParser
 from ansi import ansi_code, Format, TextColor
 from utils import get_author_member, emoji_from_string, string_from_emoji, \
@@ -30,6 +31,8 @@ EMBED_PROVIDERS = {
 
 GREEN = get_color("Verdo")
 TEAL = get_color("Turkiskoloro")
+
+MAX_DELTA = dt.timedelta(days=30).total_seconds()
 
 EMBED_DESC_LIMIT = 4000
 REQ_POINTS_DEFAULT = 1
@@ -531,6 +534,12 @@ async def message_points(
         downvotes -= 1
     return (upvotes, downvotes), candidate
 
+def clear_up_starboard_posts(guild_id: int):
+    now = dt.datetime.now().timestamp()
+    for msg, post_data in DATABASE[str(guild_id)]["Posted"].items():
+        if now - post_data["Timestamp"] >= MAX_DELTA:
+            del DATABASE[str(guild_id)]["Posted"][msg]
+
 @loader.command
 class Informujigi(
     lightbulb.MessageCommand,
@@ -593,6 +602,9 @@ async def reaction(
     if event.channel_id == settings.channel_id:
         return
     message = await rest.fetch_message(event.channel_id, event.message_id)
+    now = dt.datetime.now().timestamp()
+    if now - message.timestamp >= MAX_DELTA:
+        return
     points, candidate = await message_points(event, message, settings)
     if not points:
         return
@@ -606,6 +618,7 @@ async def reaction(
     if downvote_emoji_mention:
         content += "   |   " + downvote_emoji_mention + "   ×" + str(downvotes)
     content += "**"
+    clear_up_starboard_posts(guild_id)
     if candidate and upvotes - downvotes >= required_points:
         embed = await embedify(message, event.guild_id)
         post = await rest.create_message(
