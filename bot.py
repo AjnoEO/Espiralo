@@ -130,11 +130,7 @@ class Diri(
             response += f" en la kanalon {self.channel.mention}"
         await ctx.respond(
             response,
-            flags=hikari.MessageFlag.EPHEMERAL
-        )
-        await ctx.respond(
-            "abobus",
-            flags=hikari.MessageFlag.EPHEMERAL
+            ephemeral=True
         )
 
 @lightbulb_client.register(guilds = [TEST_SERVER_ID])
@@ -157,7 +153,7 @@ class Resxargi(
         await lightbulb_client.reload_extensions(extension)
         await ctx.respond(
             f"Mi reŝargis la kromprogramon {extension}",
-            flags=hikari.MessageFlag.EPHEMERAL
+            ephemeral=True
         )
 
 bot.run()
