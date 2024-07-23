@@ -1,3 +1,16 @@
+# Sekretaj dosieroj
 config.ini
-# [data]
-# token = enmetu_vian_robotkodon_ĉi_tien
+db.json
+
+# Funkciaj dosierujoj
+.venv
+__pycache__
+
+# Provizoraj dosieroj
+temp
+
+# Testejo
+testejo.py
+testejo_robota.py
+traceback.txt
+testujo
