@@ -603,7 +603,7 @@ async def reaction(
         return
     message = await rest.fetch_message(event.channel_id, event.message_id)
     now = dt.datetime.now().timestamp()
-    if now - message.timestamp >= MAX_DELTA:
+    if now - message.timestamp.timestamp() >= MAX_DELTA:
         return
     points, candidate = await message_points(event, message, settings)
     if not points:
