@@ -5,7 +5,7 @@ import datetime as dt
 from configparser import ConfigParser
 from ansi import ansi_code, Format, TextColor
 from utils import get_author_member, emoji_from_string, string_from_emoji, \
-    author_reacted, strif, require_confirmation, owner_only
+    author_reacted, strif, require_confirmation, UserIsWrong, owner_only
 from utils_db import Database
 from utils_eo import get_color, human_readable_time, plural, kaj_join, BOOLEAN_CHOICES
 
@@ -87,10 +87,11 @@ class StarboardSettings():
         self.__star_blocking = False
 
         if not parameters:
-            assert str(guild_id) in DATABASE, (
-                "En via servilo ne estas aktiva steltabulo. "
-                "Agordu steltabulon per «/steltabulon aktivigi»"
-            )
+            if str(guild_id) in DATABASE: 
+                raise UserIsWrong(
+                    "En via servilo ne estas aktiva steltabulo. "
+                    "Agordu steltabulon per «/steltabulon aktivigi»"
+                )
             parameters = DATABASE[str(guild_id)]["Settings"]
         
         self.update_parameters(**parameters, assert_req=True)
@@ -199,7 +200,8 @@ class StarboardSettings():
         return self.__required_points
     
     def set_required_points(self, value: int, update: bool = True) -> dict[str]:
-        assert value > 0, f"La kvanto de havendaj poentoj estu pozitiva"
+        if value <= 0:
+            raise UserIsWrong(f"La kvanto de havendaj poentoj estu pozitiva")
         self.__required_points = value
         return self.__database_key_value("required_points", self.__required_points, update)
 
@@ -685,10 +687,11 @@ class Aktivigi(
 
     @lightbulb.invoke
     async def invoke(self, ctx: lightbulb.Context):
-        assert str(ctx.guild_id) not in DATABASE, (
-            f"En via servilo jam estas aktiva steltabulo. "
-            f"Reagordu la steltabulon per «/steltabulon reagordi»"
-        )
+        if str(ctx.guild_id) in DATABASE:
+            raise UserIsWrong(
+                f"En via servilo jam estas aktiva steltabulo. "
+                f"Reagordu la steltabulon per «/steltabulon reagordi»"
+            )
         options = {
             "channel": self.channel,
             "upvote_emoji": self.upvote_emoji,
@@ -797,7 +800,8 @@ class Forigi(
 ):
     @lightbulb.invoke
     async def invoke(self, ctx: lightbulb.Context):
-        assert str(ctx.guild_id) in DATABASE, f"Via servilo jam ne havas steltabulon"
+        if str(ctx.guild_id) not in DATABASE:
+            raise UserIsWrong(f"Via servilo jam ne havas steltabulon")
         del DATABASE[str(ctx.guild_id)]
         embed = hikari.Embed(
             title="La steltabulo estas forigita",

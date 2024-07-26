@@ -9,6 +9,9 @@ import re
 from configparser import ConfigParser
 from utils_eo import get_color
 
+class UserIsWrong(Exception):
+    """Erarklaso por eraroj, kiujn povas kaŭzi misagoj de la uzantoj"""
+
 config = ConfigParser()
 config.read("config.ini")
 data = config["datumoj"]
@@ -20,7 +23,8 @@ async def owner_only(_: lightbulb.ExecutionPipeline, ctx: lightbulb.Context) -> 
     command_name = ctx.command_data.name
     if ctx.command_data.type == hikari.CommandType.SLASH:
         command_name = "/" + command_name
-    assert ctx.user.id == OWNER, f"Nur <@{OWNER}> rajtas uzi la komandon `{command_name}`"
+    if ctx.user.id != OWNER:
+        raise UserIsWrong(f"Nur <@{OWNER}> rajtas uzi la komandon `{command_name}`")
 
 class ConfirmationButton(miru.Button):
     def __init__(self, label: str, style: hikari.ButtonStyle, value) -> None:
@@ -87,7 +91,7 @@ def check_emoji(string: str) -> int | str:
         return int(match.group(1))
     if string in EMOJIS:
         return string
-    assert False, ValueError(f"{string} ne estas valida emoĝio")
+    raise ValueError(f"{string} ne estas valida emoĝio")
 
 def string_from_emoji(emoji: hikari.Emoji | str | None) -> str | None:
     if not emoji:

@@ -6,7 +6,7 @@ import hikari
 import lightbulb
 import miru
 import re
-from utils import require_confirmation, owner_only
+from utils import require_confirmation, UserIsWrong, owner_only
 from utils_eo import get_color
 
 config = ConfigParser()
@@ -51,7 +51,7 @@ async def handler(exc: lightbulb.exceptions.ExecutionPipelineFailedException) ->
         error_cause = exc.invocation_failure
     else:
         error_cause = exc.hook_failures[0].__cause__
-    if isinstance(error_cause, AssertionError):
+    if isinstance(error_cause, UserIsWrong):
         error_message = str(error_cause)
         handled = True
     else:
