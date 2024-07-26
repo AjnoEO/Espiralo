@@ -536,7 +536,8 @@ async def message_points(
 
 def clear_up_starboard_posts(guild_id: int):
     now = dt.datetime.now().timestamp()
-    for msg, post_data in DATABASE[str(guild_id)]["Posted"].items():
+    posts = dict(DATABASE[str(guild_id)]["Posted"])
+    for msg, post_data in posts.items():
         if now - post_data["Timestamp"] >= MAX_DELTA:
             del DATABASE[str(guild_id)]["Posted"][msg]
 
