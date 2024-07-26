@@ -651,7 +651,7 @@ class Aktivigi(
     lightbulb.SlashCommand,
     name = "aktivigi",
     description = "Agordi kaj aktivigi steltabulon",
-    default_member_permissions = hikari.Permissions.NONE,
+    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
 ):
     channel = lightbulb.channel(
         "steltabula_kanalo",
@@ -716,7 +716,7 @@ class Reagordi(
     lightbulb.SlashCommand,
     name = "reagordi",
     description = "Reagordi la steltabulon",
-    default_member_permissions = hikari.Permissions.NONE,
+    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
 ):
     channel = lightbulb.channel(
         "steltabula_kanalo",
@@ -796,7 +796,7 @@ class Forigi(
     lightbulb.SlashCommand,
     name = "forigi",
     description = "Malaktivigi la steltabulon kaj forigi ĝiajn agordojn",
-    default_member_permissions = hikari.Permissions.NONE,
+    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
 ):
     @lightbulb.invoke
     async def invoke(self, ctx: lightbulb.Context):

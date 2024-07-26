@@ -138,7 +138,7 @@ class Resxargi(
     lightbulb.SlashCommand,
     name = "reŝargi",
     description = "Reŝargi kromprogramon de la roboto",
-    default_member_permissions = hikari.Permissions.NONE,
+    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
     hooks = [owner_only],
 ):
     extension = lightbulb.string(
