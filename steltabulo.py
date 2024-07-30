@@ -643,7 +643,11 @@ async def reaction(
             content
         )
 
-steltabulon = lightbulb.Group("steltabulon", "Komandoj por agordi la steltabulon por la servilo")
+steltabulon = lightbulb.Group(
+    "steltabulon", 
+    "Komandoj por agordi la steltabulon por la servilo",
+    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
+)
 loader.command(steltabulon)
 
 @steltabulon.register
@@ -651,7 +655,6 @@ class Aktivigi(
     lightbulb.SlashCommand,
     name = "aktivigi",
     description = "Agordi kaj aktivigi steltabulon",
-    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
 ):
     channel = lightbulb.channel(
         "steltabula_kanalo",
@@ -716,7 +719,6 @@ class Reagordi(
     lightbulb.SlashCommand,
     name = "reagordi",
     description = "Reagordi la steltabulon",
-    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
 ):
     channel = lightbulb.channel(
         "steltabula_kanalo",
@@ -796,7 +798,6 @@ class Forigi(
     lightbulb.SlashCommand,
     name = "forigi",
     description = "Malaktivigi la steltabulon kaj forigi ĝiajn agordojn",
-    default_member_permissions = hikari.Permissions.ADMINISTRATOR,
 ):
     @lightbulb.invoke
     async def invoke(self, ctx: lightbulb.Context):
@@ -809,7 +810,7 @@ class Forigi(
         )
         await ctx.respond(embed=embed)
 
-steltabulaj = lightbulb.Group("steltabulaj", "Komandoj por agordi la steltabulon por la servilo")
+steltabulaj = lightbulb.Group("steltabulaj", "Komandoj por rigardi la steltabulajn informojn")
 loader.command(steltabulaj)
 
 @steltabulaj.register
