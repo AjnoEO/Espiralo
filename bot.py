@@ -44,13 +44,11 @@ async def on_starting(_: hikari.StartingEvent) -> None:
 @lightbulb_client.error_handler
 async def handler(exc: lightbulb.exceptions.ExecutionPipelineFailedException) -> bool:
     """Erartraktilo"""
-    # if exc.pipeline.invocation_failed:
-    # error_cause = exc.__cause__.__cause__
     handled = False
     if exc.pipeline.invocation_failed:
         error_cause = exc.invocation_failure
     else:
-        error_cause = exc.hook_failures[0].__cause__
+        error_cause = exc.hook_failures[0]
     if isinstance(error_cause, UserIsWrong):
         error_message = str(error_cause)
         handled = True
@@ -85,11 +83,13 @@ class HelloButtons(miru.View):
     
     @miru.button(label="Saluton!", emoji="👋", style=hikari.ButtonStyle.SUCCESS)
     async def button_good(self, ctx: miru.ViewContext, _: miru.Button) -> None:
-        await ctx.message.edit(":D", components=None)
+        ctx.view.stop()
+        await ctx.edit_response(":D", components=None)
 
     @miru.button(label="Iru kacen!", style=hikari.ButtonStyle.DANGER)
     async def button_bad(self, ctx: miru.ViewContext, _: miru.Button) -> None:
-        await ctx.message.edit(":c", components=None)
+        ctx.view.stop()
+        await ctx.edit_response(":c", components=None)
 
 @lightbulb_client.register
 class Saluti(
