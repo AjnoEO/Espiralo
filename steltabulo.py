@@ -87,7 +87,7 @@ class StarboardSettings():
         self.__star_blocking = False
 
         if not parameters:
-            if str(guild_id) in DATABASE: 
+            if str(guild_id) not in DATABASE: 
                 raise UserIsWrong(
                     "En via servilo ne estas aktiva steltabulo. "
                     "Agordu steltabulon per «/steltabulon aktivigi»"
@@ -601,6 +601,8 @@ async def reaction(
     if isinstance(event, (hikari.GuildReactionAddEvent, hikari.GuildReactionDeleteEvent)) and event.user_id == ME:
         return
     guild_id = event.guild_id
+    if str(guild_id) not in DATABASE:
+        return
     settings = StarboardSettings(guild_id)
     if event.channel_id == settings.channel_id:
         return
