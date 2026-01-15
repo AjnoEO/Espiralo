@@ -24,9 +24,17 @@ MEDIA_TYPES = {
     "video": "filmo",
 }
 EMBED_PROVIDERS = {
-    "YouTube": "channel",
+    "YouTube": "video",
     "Spotify": "music",
     "Apple Music": "music"
+}
+SPECIAL_MESSAGES = {
+    hikari.MessageType.CHANNEL_PINNED_MESSAGE: "{uzanto} fiksis mesaĝon en la kanalo",
+    hikari.MessageType.GUILD_MEMBER_JOIN: "{uzanto} aliĝis al la servilo",
+    hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]]",
+    hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la unuaa nivelo",
+    hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la dua nivelo",
+    hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la tria nivelo",
 }
 
 GREEN = get_color("Verdo")
@@ -439,9 +447,10 @@ async def embedify(
     `color`
         la koloro de la maldekstra linio de la informujo
     """
+    is_special = message.type in SPECIAL_MESSAGES
     embed = hikari.Embed(
         title=title,
-        description=message.content,
+        description=message.message_reference.message_link if is_special else message.content,
         url=message.make_link(message.guild_id) if link_the_message else url,
         color=color,
         timestamp=message.timestamp,
@@ -452,7 +461,14 @@ async def embedify(
     author = await get_author_member(message, guild_id)
     name = author.display_name
     if author.is_bot: name = "[🤖] " + name
+    if is_special:
+        string = SPECIAL_MESSAGES[message.type]
+        if "[[" in string and not message.content:
+            string = re.sub(r"\[\[.+?\]\]", "", string)
+        name = string.format(uzanto=name, mesaĝo=message.message_reference.message_link, enhavo=message.content)
     embed.set_author(name=name, icon=author.display_avatar_url)
+    if is_special:
+        return embed
 
     # la kunsendaĵoj (inkl. el ceteraj sociretoj)
     main_attachment, attachment_description, numbers_of_attachments = parse_attachments(
@@ -567,7 +583,10 @@ class Sencimigo(
     async def invoke(self, ctx: lightbulb.Context):
         message = self.target
         print(message)
+        print(message.type)
         print(message.content)
+        print()
+        print(message.message_reference)
         print()
         print(message.attachments)
         if message.attachments:
