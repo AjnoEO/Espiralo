@@ -450,7 +450,7 @@ async def embedify(
     is_special = message.type in SPECIAL_MESSAGES
     embed = hikari.Embed(
         title=title,
-        description=message.message_reference.message_link if is_special else message.content,
+        description=message.message_link if is_special else message.content,
         url=message.make_link(message.guild_id) if link_the_message else url,
         color=color,
         timestamp=message.timestamp,
