@@ -32,7 +32,7 @@ SPECIAL_MESSAGES = {
     hikari.MessageType.CHANNEL_PINNED_MESSAGE: "{uzanto} fiksis mesaĝon en la kanalo",
     hikari.MessageType.GUILD_MEMBER_JOIN: "{uzanto} aliĝis al la servilo",
     hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]]",
-    hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la unuaa nivelo",
+    hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la unua nivelo",
     hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la dua nivelo",
     hikari.MessageType.USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3: "{uzanto} ĵus nitrumis la servilon[[ {enhavo} fojojn]] ĝis la tria nivelo",
 }
@@ -468,7 +468,7 @@ async def embedify(
         string = SPECIAL_MESSAGES[message.type]
         if "[[" in string and not message.content:
             string = re.sub(r"\[\[.+?\]\]", "", string)
-        name = string.format(uzanto=name, mesaĝo=message.message_reference.message_link, enhavo=message.content)
+        name = string.format(uzanto=name, enhavo=message.content) # , mesaĝo=message.message_reference.message_link
     embed.set_author(name=name, icon=author.display_avatar_url)
     if is_special:
         return embed
